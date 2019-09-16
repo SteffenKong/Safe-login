@@ -1,0 +1,44 @@
+.login {
+    height:235px;
+    width:500px;
+    background-color: white;
+    margin:150px auto;
+    padding-top:65px;   
+    border-radius: 3%;
+}
+
+h1 {
+    text-align: center;
+    color:white;
+    font-size:60px;
+    position: relative;
+    top:60px;
+}
+
+form {
+    width:80%;
+    margin:0 auto;
+}
+
+.login .layui-form .captcha {
+    width:100px;
+}
+
+.login .layui-form button {
+    width:100px;
+}
+
+.login .layui-form button.sign {
+    margin-right:50px;
+}
+
+#captcha {
+    float:left;
+}
+
+.captcha_pic {
+    float:left;
+    margin-left:30px;
+    height:40px;
+    width:160px;
+}

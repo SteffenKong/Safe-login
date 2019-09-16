@@ -14,3 +14,16 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::group(['namespace'=>'admin'],function() {
+    //登录界面
+    Route::get('/login','LoginController@login');
+
+    //获取公钥
+    Route::get('/getPublicKey','LoginController@getPublicKey');
+
+    //登录动作
+    Route::post('/sign','LoginController@sign');
+});
+
+

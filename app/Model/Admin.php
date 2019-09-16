@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Tools\Rsa\RSACrypt;
 
 /**
  * Class Admin
@@ -12,8 +12,38 @@ use Illuminate\Database\Eloquent\Model;
 class Admin extends Model
 {
 
-    public function login() {
-        //TODO
+    protected $guarded = [];
+    protected $table = 'admin';
+    protected $primaryKey = 'id';
+
+    /**
+     * @param $account
+     * @param $password
+     * @return array|bool
+     */
+    public function login($account,$password) {
+        //1.解密
+        $rsa = new RSACrypt();
+        $rsa->setPrivkey(config('secret.rsa.privateKey'));
+        $dePass = $rsa->decryptByPrivateKey($password);
+        //2.解密后的明文密码进行哈希加密
+        $newPass = md5(md5($dePass));
+        //3.对比数据库
+        $admin = Admin::where('account',$account)->first();
+        if(!$admin) {
+            return false;
+        }
+
+        if($newPass !== $admin['password']) {
+            return false;
+        }
+
+        return [
+            'id'=>$admin->id,
+            'account'=>$admin->account,
+            'email'=>$admin->email,
+            'createdAt'=>$admin->created_at
+        ];
     }
 
     /**
