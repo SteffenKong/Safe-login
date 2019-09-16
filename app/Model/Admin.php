@@ -1,6 +1,7 @@
 <?php
 namespace App\Model;
 
+use App\Traits\login;
 use Illuminate\Database\Eloquent\Model;
 use App\Tools\Rsa\RSACrypt;
 use Lcobucci\JWT\Builder;
@@ -14,7 +15,7 @@ use Lcobucci\JWT\Parser;
  */
 class Admin extends Model
 {
-
+    use login;
     protected $guarded = [];
     protected $table = 'admin';
     protected $primaryKey = 'id';
@@ -113,5 +114,29 @@ class Admin extends Model
     public function getStatus($adminId) {
         $status = Admin::where('id',$adminId)->value('status') ?? '';
         return (bool)$status;
+    }
+
+
+    /**
+     * @param $adminId
+     * @return mixed
+     */
+    public function getLoginStatus($adminId) {
+        return $this->getLoginStatusById($adminId);
+    }
+
+    /**
+     * @param $adminId
+     * @return mixed
+     */
+    public function setLoginStatus($adminId) {
+        return $this->setLogin($adminId);
+    }
+
+    /**
+     * @param $adminId
+     */
+    public function logoutRedis($adminId) {
+        return $this->logout($adminId);
     }
 }

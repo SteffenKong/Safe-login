@@ -31,6 +31,7 @@ class LoginController extends Controller
         return view('/admin/login/login');
     }
 
+
     /**
      * @param LoginRequest $request
      * @return false|string
@@ -47,10 +48,21 @@ class LoginController extends Controller
         if(!$status) {
             return jsonPrint('001','管理员已被禁用');
         }
+
+        $isLogin = $this->adminModel->getLoginStatus($admin['id']);
+
+        if($isLogin) {
+            return jsonPrint('001','该账号已登录');
+        }
+
         //生成token
         $token = $this->adminModel->getTokenByAdmin($admin);
+        //登录成功记录redis
+        $this->adminModel->setLoginStatus($admin['id']);
         return jsonPrint('000','登录成功',['token'=>$token]);
     }
+
+
 
     /**
      * @return false|string
@@ -60,11 +72,11 @@ class LoginController extends Controller
         return jsonPrint('000','获取成功',['publicKey'=>config('secret.rsa.publicKey')]);
     }
 
+
     /**
-     * @param $key
-     * 清除cookie退出登录
+     * 退出登录
      */
-    public function logout($key) {
-        Cookie::forget($key);
+    public function logout() {
+//        return $this->adminModel->logoutRedis();
     }
 }
