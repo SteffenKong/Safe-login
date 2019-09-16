@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Model\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\admin\LoginRequest;
+use Cookie;
 
 
 /**
@@ -42,7 +43,13 @@ class LoginController extends Controller
         if(!$admin) {
             return jsonPrint('001','登录失败');
         }
-        return jsonPrint('000','登录成功');
+        $status = $this->adminModel->getStatus($admin['id']);
+        if(!$status) {
+            return jsonPrint('001','管理员已被禁用');
+        }
+        //生成token
+        $token = $this->adminModel->getTokenByAdmin($admin);
+        return jsonPrint('000','登录成功',['token'=>$token]);
     }
 
     /**
@@ -53,7 +60,11 @@ class LoginController extends Controller
         return jsonPrint('000','获取成功',['publicKey'=>config('secret.rsa.publicKey')]);
     }
 
-    public function logout() {
-
+    /**
+     * @param $key
+     * 清除cookie退出登录
+     */
+    public function logout($key) {
+        Cookie::forget($key);
     }
 }
