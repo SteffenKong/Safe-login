@@ -47,6 +47,7 @@ $(".sign").click(function() {
                 publicKey = data.data.publicKey;
                 //在这里对密码进行加密
                 var enPass = encryptPass(password,publicKey);
+                $("#password").val(enPass);
                 $.ajax({
                     url:'/sign',
                     dataType:'Json',
@@ -55,16 +56,21 @@ $(".sign").click(function() {
                     success:function(data) {
                         if(data.code === '000') {
                             layer.msg('登陆成功',{icon:1});
-                            // setInterval(function() {
-                            //     window.location.href = '/index';
-                            // },1000)
+                            console.log(data);
+                            $.cookie('token',data.data.token);
+                            setInterval(function() {
+                                window.location.href = '/admin/index';
+                            },1000);
                         }else if(data.code === '001') {
                             layer.msg(data.message,{icon:2});
                             refreshCaptcha($("#captcha_pic"));
+                            $("#password").val(''); //清空密码
                         }else {
                             let errors = data.errors;
                             $.each(errors,function(k,v) {
                                 layer.msg(v[0],{icon:2});
+                                $("#password").val(''); //清空密码
+                                $("#captcha").val('');  //清空验证码
                             });
                             refreshCaptcha($("#captcha_pic"));
                         }

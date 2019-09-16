@@ -24,6 +24,8 @@ Route::group(['namespace'=>'admin'],function() {
 
     //登录动作
     Route::post('/sign','LoginController@sign');
+
+    Route::get('/admin/index','IndexController@index');
 });
 
 

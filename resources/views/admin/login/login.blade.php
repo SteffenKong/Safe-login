@@ -49,6 +49,7 @@
 </html>
 <script type="text/javascript" src="/static/admin/layui/layui.js"></script>
 <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/cookie/jquery.cookie.js"></script>
 <script type="text/javascript" src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
 <script type="text/javascript" src="/static/admin/jsencrypt/bin/jsencrypt.min.js"></script>
 <script type="text/javascript" src="/static/admin/login.js"></script>

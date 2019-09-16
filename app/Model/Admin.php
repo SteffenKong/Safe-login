@@ -71,7 +71,8 @@ class Admin extends Model
 
     /**
      * @param $token
-     * @return bool
+     * @return array|bool
+     * 解开token获取管理员信息
      */
     public function getLoginAdmin($token) {
         if(empty($token)) {
@@ -95,7 +96,12 @@ class Admin extends Model
         $tokens = json_decode($tokenStr,true);
         $id = $tokens['jti'];
         $admin = Admin::where('id',$id)->first(['id','account','email','status','updated_at','created_at']);
-        return $admin;
+        return [
+            'id'=>$admin->id,
+            'account'=>$admin->account,
+            'email'=>$admin->email,
+            'createdAt'=>$admin->created_at
+        ];
     }
 
 
