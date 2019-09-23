@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Model\Admin;
 use Closure;
 
 class CheckLogin
@@ -17,6 +18,18 @@ class CheckLogin
     public function handle($request, Closure $next)
     {
 
-        return $next($request);
+        $token = $request->header('token');
+
+        if(!$token) {
+            jsonPrint('001','未登录');
+        }
+
+        $adminModel = new Admin();
+        $admin = $adminModel->getLoginAdmin();
+        if(!$admin) {
+            return jsonPrint('001','token非法');
+        }
+        $response =  $next($request);
+        return $response;
     }
 }

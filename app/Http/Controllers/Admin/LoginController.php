@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Model\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\admin\LoginRequest;
+use App\Exceptions\AuthorizeException;
 use Cookie;
 
 
@@ -74,9 +75,16 @@ class LoginController extends Controller
 
 
     /**
+     * @throws AuthorizeException
      * 退出登录
      */
     public function logout() {
-//        return $this->adminModel->logoutRedis();
+        $admin = $this->adminModel->getLoginAdmin();
+        if(!$admin) {
+            throw new AuthorizeException('token非法');
+        }
+        $adminId = $admin['id'];
+        $res = $this->adminModel->logoutRedis($adminId);
+        return jsonPrint('000','注销成功');
     }
 }

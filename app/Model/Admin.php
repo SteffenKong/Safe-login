@@ -1,6 +1,7 @@
 <?php
 namespace App\Model;
 
+use App\Exceptions\AuthorizeException;
 use App\Traits\login;
 use Illuminate\Database\Eloquent\Model;
 use App\Tools\Rsa\RSACrypt;
@@ -74,10 +75,13 @@ class Admin extends Model
      * @param $token
      * @return array|bool
      * 解开token获取管理员信息
+     * @throws AuthorizeException
      */
-    public function getLoginAdmin($token) {
+    public function getLoginAdmin() {
+        $token = request()->header('token');
+
         if(empty($token)) {
-            return false;
+            throw new AuthorizeException('token非法');
         }
         $privateKey = config('secret.jwt.privateKey');
         $signer = new Sha256();
@@ -85,12 +89,12 @@ class Admin extends Model
         $res = $parser->parse($token);
         if(!$res->verify($signer,$privateKey)) {
             //token不合法
-            return false;
+            throw new AuthorizeException('token非法');
         }
         //验证token是否过期
         if($res->isExpired()) {
             //token过期
-            return false;
+            throw new AuthorizeException('token过期');
         }
         $token = $res->getClaims();
         $tokenStr = json_encode($token);
@@ -101,7 +105,8 @@ class Admin extends Model
             'id'=>$admin->id,
             'account'=>$admin->account,
             'email'=>$admin->email,
-            'createdAt'=>$admin->created_at
+            'status'=>$admin->status,
+            'createdAt'=>$admin->created_at->toDateTimeString()
         ];
     }
 
@@ -135,6 +140,7 @@ class Admin extends Model
 
     /**
      * @param $adminId
+     * 退出用户:销毁redis记录
      */
     public function logoutRedis($adminId) {
         return $this->logout($adminId);

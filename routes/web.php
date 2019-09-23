@@ -25,7 +25,14 @@ Route::group(['namespace'=>'admin'],function() {
     //登录动作
     Route::post('/sign','LoginController@sign');
 
+    //首页
     Route::get('/admin/index','IndexController@index');
+    Route::group(['middleware'=>['CheckLogin']],function() {
+        Route::get('/admin/getIndexData','IndexController@getIndexData');
+
+        //退出登录
+        Route::get('/logout','LoginController@logout');
+    });
 });
 
 

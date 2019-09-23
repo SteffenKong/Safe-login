@@ -21,7 +21,7 @@ trait login {
      */
     public function logout($adminId) {
         $prefix = config('misc.redis.login_key');
-        Redis::delete($prefix.':'.$adminId);
+        Redis::del($prefix.':'.$adminId);
     }
 
     /**

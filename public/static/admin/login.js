@@ -56,7 +56,6 @@ $(".sign").click(function() {
                     success:function(data) {
                         if(data.code === '000') {
                             layer.msg('登陆成功',{icon:1});
-                            console.log(data);
                             $.cookie('token',data.data.token);
                             setInterval(function() {
                                 window.location.href = '/admin/index';
